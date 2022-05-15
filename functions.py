@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 from bs4 import BeautifulSoup as bs
 
-DRIVER_PATH = "/Users/tahpramen/Developer/chromedriver"
+DRIVER_PATH = f"{os.getcwd()}/chromedriver"
 URL = "https://pacific.libcal.com/spaces"
 
 def get_time_slots():
