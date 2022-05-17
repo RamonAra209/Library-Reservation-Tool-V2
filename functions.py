@@ -6,7 +6,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 from bs4 import BeautifulSoup as bs
 
-DRIVER_PATH = f"{os.getcwd()}/chromedriver"
+# DRIVER_PATH = f"{os.getcwd()}/chromedriver"
+DRIVER_PATH = "/usr/bin/chromedriver"
 URL = "https://pacific.libcal.com/spaces"
 
 def get_time_slots():
@@ -94,11 +95,15 @@ def make_reservation(time_info:dict, TIMES:list, END_TIME, room):
     # options.headless = True
     options.add_argument("--headless")
     options.add_argument("--window-size=1420,1080")
+    options.set_capability("goog:loggingPrefs", {'performance': 'ALL'})
+    # print(f"\n\n {DRIVER_PATH} \n\n")
     driver = webdriver.Chrome(DRIVER_PATH, chrome_options=options)
     # driver = webdriver.Chrome(DRIVER_PATH)
-    driver.get(URL)
 
+    driver.get(URL)
     html = driver.page_source
+    print("Webdriver returned Source")
+
     soup = bs(html, 'lxml')
     title_html_tag = convert_time_to_xpath_readable(start_time, room)
     if int(title_html_tag[0:2]) >= 13: # changes 24 hour format to 12 hour format
@@ -120,6 +125,7 @@ def make_reservation(time_info:dict, TIMES:list, END_TIME, room):
     select = Select(driver.find_element_by_xpath('/html/body/div[2]/main/div/div/div/div[7]/form/fieldset/div[1]/div/div/div/div/select'))
     select.select_by_index(len(TIMES) - 1)
     
+    print("Got past select drop-down for hours")
     time.sleep(0.5)
 
     # trash_button = "/html/body/div[2]/main/div/div/div/div[7]/form/fieldset/div[1]/div/div/div/div/div/button"
@@ -128,34 +134,42 @@ def make_reservation(time_info:dict, TIMES:list, END_TIME, room):
     submit_times_button = "/html/body/div[2]/main/div/div/div/div[7]/form/fieldset/div[2]/button"
     driver.find_element_by_xpath(submit_times_button).click()
     
+    print("Got past submit times")
     time.sleep(0.5)
     
     continue_button = "/html/body/div[2]/main/div/div/div/div[8]/div[2]/form/div[2]/button"
     driver.find_element_by_xpath(continue_button).click()
     
+    print("Got past continue button")
     time.sleep(0.5)
 
     ###* Filling in personal info
     load_dotenv('info.env')
+    print("Loaded dot_env")
+
     first_name_xpath = "/html/body/div[2]/main/div/div/div/div[8]/div[3]/form/div[2]/div[2]/input"
     driver.find_element_by_xpath(first_name_xpath).send_keys(os.getenv("first_name"))
+    print("Entered first name")
 
     last_name_xpath = "/html/body/div[2]/main/div/div/div/div[8]/div[3]/form/div[2]/div[3]/input"
     driver.find_element_by_xpath(last_name_xpath).send_keys(os.getenv("last_name"))
+    print("Entered last name")
 
     email_xpath = "/html/body/div[2]/main/div/div/div/div[8]/div[3]/form/div[3]/div/input"
     driver.find_element_by_xpath(email_xpath).send_keys(os.getenv("email"))
+    print("Entered Email")
 
     univ_id_xpath = "/html/body/div[2]/main/div/div/div/div[8]/div[3]/form/div[4]/div/input"
     driver.find_element_by_xpath(univ_id_xpath).send_keys(os.getenv("univ_id"))
+    print("Entered university id")
     
     select = Select(driver.find_element_by_xpath("/html/body/div[2]/main/div/div/div/div[8]/div[3]/form/div[6]/div/select"))
     select.select_by_index(7)
+    print("Entered SOESCS")
     ###*^^^^^^^^^^^^^^^^^
 
     submit_booking_button = "/html/body/div[2]/main/div/div/div/div[8]/div[3]/form/div[9]/div/button"
     driver.find_element_by_xpath(submit_booking_button).click()
-    
     driver.quit()
 
     
