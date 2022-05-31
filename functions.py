@@ -1,3 +1,4 @@
+import json
 import time, requests, constants, os
 from dotenv import load_dotenv
 from datetime import date, datetime, timedelta
@@ -7,7 +8,8 @@ from selenium.webdriver.support.ui import Select
 from bs4 import BeautifulSoup as bs
 
 # DRIVER_PATH = f"{os.getcwd()}/chromedriver"
-DRIVER_PATH = "/usr/bin/chromedriver"
+# DRIVER_PATH = "/usr/bin/chromedriver"
+DRIVER_PATH = "/Users/tahpramen/Developer/Personal Projects/LRT_V2/chromedriver"
 URL = "https://pacific.libcal.com/spaces"
 
 def get_time_slots():
@@ -81,7 +83,7 @@ def check_hour(room_data: dict, times_between:list) -> dict:
                 slot_and_data[key] = val
     return slot_and_data 
     
-def make_reservation(time_info:dict, TIMES:list, END_TIME, room):
+def make_reservation(time_info:dict, TIMES:list, END_TIME, room, user):
     start_time, end_time = TIMES[0], TIMES[-1]
 
     xpath_row = 0 
@@ -96,7 +98,7 @@ def make_reservation(time_info:dict, TIMES:list, END_TIME, room):
     options.add_argument("--headless")
     options.add_argument("--window-size=1420,1080")
     options.set_capability("goog:loggingPrefs", {'performance': 'ALL'})
-    # print(f"\n\n {DRIVER_PATH} \n\n")
+    print(f"\n\n {DRIVER_PATH} \n\n")
     driver = webdriver.Chrome(DRIVER_PATH, chrome_options=options)
     # driver = webdriver.Chrome(DRIVER_PATH)
 
@@ -113,11 +115,6 @@ def make_reservation(time_info:dict, TIMES:list, END_TIME, room):
 
     element_to_xpath = soup.find('a', title=title_html_tag)
     xpath_to_click = xpath_soup(element_to_xpath)
-    # print()
-    # print('title_html_tag: ', title_html_tag)
-    # print('element_to_xpath: ', element_to_xpath)
-    # print('xpath_to_click: ', xpath_to_click)
-    # print()
     driver.find_element_by_xpath(xpath_to_click).click()
 
     time.sleep(0.5)
@@ -147,20 +144,30 @@ def make_reservation(time_info:dict, TIMES:list, END_TIME, room):
     load_dotenv('info.env')
     print("Loaded dot_env")
 
+    user_data = None
+    with open("users.json") as f:
+        user_data = json.load(f)
+    print(user_data)
+    user_data = user_data[user]
+
     first_name_xpath = "/html/body/div[2]/main/div/div/div/div[8]/div[3]/form/div[2]/div[2]/input"
-    driver.find_element_by_xpath(first_name_xpath).send_keys(os.getenv("first_name"))
+    # driver.find_element_by_xpath(first_name_xpath).send_keys(os.getenv("first_name"))
+    driver.find_element_by_xpath(first_name_xpath).send_keys(user_data["first_name"])
     print("Entered first name")
 
     last_name_xpath = "/html/body/div[2]/main/div/div/div/div[8]/div[3]/form/div[2]/div[3]/input"
-    driver.find_element_by_xpath(last_name_xpath).send_keys(os.getenv("last_name"))
+    # driver.find_element_by_xpath(last_name_xpath).send_keys(os.getenv("last_name"))
+    driver.find_element_by_xpath(last_name_xpath).send_keys(user_data["last_name"])
     print("Entered last name")
 
     email_xpath = "/html/body/div[2]/main/div/div/div/div[8]/div[3]/form/div[3]/div/input"
-    driver.find_element_by_xpath(email_xpath).send_keys(os.getenv("email"))
+    # driver.find_element_by_xpath(email_xpath).send_keys(os.getenv("email"))
+    driver.find_element_by_xpath(email_xpath).send_keys(user_data["email"])
     print("Entered Email")
 
     univ_id_xpath = "/html/body/div[2]/main/div/div/div/div[8]/div[3]/form/div[4]/div/input"
-    driver.find_element_by_xpath(univ_id_xpath).send_keys(os.getenv("univ_id"))
+    # driver.find_element_by_xpath(univ_id_xpath).send_keys(os.getenv("univ_id"))
+    driver.find_element_by_xpath(univ_id_xpath).send_keys(user_data["univ_id"])
     print("Entered university id")
     
     select = Select(driver.find_element_by_xpath("/html/body/div[2]/main/div/div/div/div[8]/div[3]/form/div[6]/div/select"))
