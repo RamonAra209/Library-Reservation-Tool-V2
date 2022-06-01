@@ -8,8 +8,8 @@ from selenium.webdriver.support.ui import Select
 from bs4 import BeautifulSoup as bs
 
 # DRIVER_PATH = f"{os.getcwd()}/chromedriver"
-# DRIVER_PATH = "/usr/bin/chromedriver"
-DRIVER_PATH = "/Users/tahpramen/Developer/Personal Projects/LRT_V2/chromedriver"
+DRIVER_PATH = "/usr/bin/chromedriver"
+# DRIVER_PATH = "/Users/tahpramen/Developer/Personal Projects/LRT_V2/chromedriver"
 URL = "https://pacific.libcal.com/spaces"
 
 def get_time_slots():

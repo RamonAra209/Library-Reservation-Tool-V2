@@ -1,9 +1,12 @@
+print("READ THE FILE")
 import json
 import time
 from bs4 import BeautifulSoup as bs
 import constants
 from functions import check_hour, get_room_data, get_time_slots, get_times_between_xy, make_reservation
 from sys import argv
+
+print("READ THE IMPORTS")
 
 now = time.time()
 if len(argv) != 4:
@@ -14,10 +17,10 @@ if len(argv) != 4:
 START_TIME = argv[1]
 END_TIME = argv[2]
 USER = argv[3]
-START_TIME = f"2022-05-30 {START_TIME}"
-END_TIME = f"2022-05-30 {END_TIME}"
-# START_TIME = f"{str(constants.TODAY)} {START_TIME}"
-# END_TIME = f"{str(constants.TODAY)} {END_TIME}"
+#START_TIME = f"2022-06-01 {START_TIME}"
+#END_TIME = f"2022-06-01 {END_TIME}"
+START_TIME = f"{str(constants.TODAY)} {START_TIME}"
+END_TIME = f"{str(constants.TODAY)} {END_TIME}"
 
 # START_TIME = "2022-05-18 13:00:00" 
 # print('START_TIME: ', START_TIME)
@@ -25,10 +28,12 @@ END_TIME = f"2022-05-30 {END_TIME}"
 # END_TIME = "2022-05-18 16:00:00" 
 # print('END_TIME: ', END_TIME)
 TIMES = get_times_between_xy(start_time=START_TIME, end_time=END_TIME)[0:-1]
+print("Read argvs")
 
 user_data = None
 with open("users.json") as f:
     user_data = json.load(f)
+print("Got passed reading user_data")
 
 if USER in user_data:
     times_json = get_time_slots()["slots"]
