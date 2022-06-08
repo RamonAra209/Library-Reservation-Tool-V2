@@ -198,14 +198,14 @@ def xpath_soup(element):
 def convert_time_to_xpath_readable(time_info:str, room):
     """ Args:
         time (str): ex. 2022-05-14 10:00:00
-        result (str): "10:00am Saturday, May 14, 2022 - Room 107 - Available"
+        result (str): "10:00am Saturday, June 4, 2022 - Room 107 - Available"
     """
     split = time_info.split()
     inp_date, time = split[0], split[1]
     time = datetime.strptime(time, "%H:%M:%S").strftime("%H:%M%p").lower()
     d = datetime.strptime(inp_date, "%Y-%m-%d")
     day_of_week = date(d.year, d.month, d.day).weekday()
-    return f"{time} {constants.DAYS[day_of_week]}, {d.strftime('%b %d, %Y')} - Room {room} - Available"
+    return f"{time} {constants.DAYS[day_of_week]}, {d.strftime('%B %-d, %Y')} - Room {room} - Available"
 
 def get_todays_YMD():
     d = datetime.now()
